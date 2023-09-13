@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  video-streaming:
+    image: streaming-website
+    build:
+      context: ./streaming-website
+      dockerfile: Dockerfile
+    container_name: streaming-website
+    ports:
+      - "4000:80"
+    environment:
+      - PORT=80
+    restart: "no"

@@ -1,13 +1,29 @@
 version: "3.8"
 services:
+  azure-storage:
+    image: azure-storage
+    build:
+      context: ./azure-storage
+      dockerfile: Dockerfile
+    container_name: video-storage
+    ports:
+      - "4000:80"
+    environment:
+      - PORT=80
+      - STORAGE_ACCOUNT_NAME=ctrla
+      - STORAGE_ACCESS_KEY=CTZE6+3FKqqlU3McUc0BEnFcjlHGTBbveuaOk2rEpjMTDjlwPdgxD313fJwSo+7WqERm+6cfuWkd+AStKF65yw==
+    restart: "no"
+
   video-streaming:
     image: streaming-website
     build:
       context: ./streaming-website
       dockerfile: Dockerfile
-    container_name: streaming-website
+    container_name: video-streaming
     ports:
-      - "4000:80"
+      - "4001:80"
     environment:
       - PORT=80
+      - VIDEO_STORAGE_HOST=video-storage
+      - VIDEO_STORAGE_PORT=80
     restart: "no"

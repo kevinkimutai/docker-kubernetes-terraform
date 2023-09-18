@@ -1,29 +1,65 @@
 version: "3.8"
 services:
-  azure-storage:
-    image: azure-storage
-    build:
-      context: ./azure-storage
-      dockerfile: Dockerfile
-    container_name: video-storage
-    ports:
-      - "4000:80"
-    environment:
-      - PORT=80
-      - STORAGE_ACCOUNT_NAME=ctrla
-      - STORAGE_ACCESS_KEY=CTZE6+3FKqqlU3McUc0BEnFcjlHGTBbveuaOk2rEpjMTDjlwPdgxD313fJwSo+7WqERm+6cfuWkd+AStKF65yw==
-    restart: "no"
+  # azure-storage:
+  #   image: azure-storage
+  #   build:
+  #     context: ./azure-storage
+  #     dockerfile: Dockerfile-dev
+  #   container_name: video-storage
+  #   ports:
+  #     - "4000:80"
+  #   environment:
+  #     - PORT=80
+  #     - STORAGE_ACCOUNT_NAME=ctrla
+  #     - STORAGE_ACCESS_KEY=CTZE6+3FKqqlU3McUc0BEnFcjlHGTBbveuaOk2rEpjMTDjlwPdgxD313fJwSo+7WqERm+6cfuWkd+AStKF65yw==
+  #   restart: "no"
 
   video-streaming:
     image: streaming-website
     build:
       context: ./streaming-website
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-dev
     container_name: video-streaming
+    volumes:
+      - /tmp/streaming-website/npm-cache:/root/.npm:z
+      - ./streaming-website/src:/usr/src/app/src:z
+      - ./streaming-website/videos:/usr/src/app/videos:z
     ports:
       - "4001:80"
+
     environment:
       - PORT=80
       - VIDEO_STORAGE_HOST=video-storage
       - VIDEO_STORAGE_PORT=80
+      - MONGODB_URL=mongodb+srv://kevingrand:grand254@grnd.ajlox.mongodb.net/video-storage?retryWrites=true&w=majority&wtimeout=1000
+      - RABBIT_URL=amqp://guest:guest@rabbit:5672
+      - NODE_ENV=development
     restart: "no"
+
+  history:
+    image: history
+    build:
+      context: ./history
+      dockerfile: Dockerfile-dev
+    container_name: history
+    volumes:
+      - /tmp/history/npm-cache:/root/.npm:z
+      - ./history/src:/usr/src/app/src:z
+    ports:
+      - "4002:80"
+    environment:
+      - PORT=80
+      - MONGODB_URL=mongodb+srv://kevingrand:grand254@grnd.ajlox.mongodb.net/video-history?retryWrites=true&w=majority&wtimeout=1000
+      - RABBIT_URL=amqp://guest:guest@rabbit:5672
+      - NODE_ENV=development
+
+  rabbit:
+    image: rabbitmq:3.12-management
+    container_name: rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    expose:
+      - "5672"
+      - "15672"
+    restart: always

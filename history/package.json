@@ -1,5 +1,5 @@
 {
-  "name": "docker-101",
+  "name": "history",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,13 +10,14 @@
   },
   "author": "",
   "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
   "dependencies": {
     "amqplib": "^0.10.3",
     "express": "^4.18.2",
     "mongodb": "^6.1.0",
-    "mongoose": "^7.5.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
+    "mongoose": "^7.5.2",
+    "wait-port": "^1.0.4"
   }
 }

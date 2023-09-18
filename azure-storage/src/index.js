@@ -30,10 +30,8 @@ const app = express();
 //
 
 const PORT = process.env.PORT || 3000;
-const STORAGE_ACCOUNT_NAME = process.env.STORAGE_ACCOUNT_NAME || "ctrla";
-const STORAGE_ACCESS_KEY =
-  process.env.STORAGE_ACCESS_KEY ||
-  "CTZE6+3FKqqlU3McUc0BEnFcjlHGTBbveuaOk2rEpjMTDjlwPdgxD313fJwSo+7WqERm+6cfuWkd+AStKF65yw==";
+const STORAGE_ACCOUNT_NAME = process.env.STORAGE_ACCOUNT_NAME;
+const STORAGE_ACCESS_KEY = process.env.STORAGE_ACCESS_KEY;
 
 console.log(
   `Serving videos from Azure storage account ${STORAGE_ACCOUNT_NAME}.`

@@ -56,7 +56,11 @@ async function connectRabbit() {
   console.log(`Connecting to RabbitMQ server at ${RABBIT}.`);
   const messagingConnection = await amqp.connect(RABBIT);
   console.log("Connected to RabbitMQ.");
-  return messagingConnection.createChannel();
+
+  const messageChannel = await messagingConnection.createChannel();
+  await messageChannel.assertExchange("viewed", "fanout");
+
+  return messageChannel;
 }
 
 function sendViewedMessage(messageChannel, videoPath) {
@@ -64,7 +68,7 @@ function sendViewedMessage(messageChannel, videoPath) {
 
   const msg = { videoPath: videoPath };
   const jsonMsg = JSON.stringify(msg);
-  messageChannel.publish("", "viewed", Buffer.from(jsonMsg)); // Publish message to the "viewed" queue.
+  messageChannel.publish("viewed", "", Buffer.from(jsonMsg)); // Publish message to the "viewed" queue.
 }
 
 // Define your HTTP routes and message handlers.
